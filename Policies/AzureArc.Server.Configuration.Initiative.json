@@ -1,0 +1,269 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "resources": [
+        {
+            "type": "Microsoft.Authorization/policySetDefinitions",
+            "name": "AzureArc.Server.Configuration.Initiative",
+            "apiVersion": "2019-09-01",
+            "Properties":  {
+                       "Description":  "",
+                       "DisplayName":  "Azure Arc Server Configuration",
+                       "PolicyType":  "Custom",
+                       "Metadata":  {
+                                        "category":  "Azure Arc"
+                       },
+                       "Parameters":  {
+                                          "Extensions Not Allowed":  {
+                                                                         "type":  "array",
+                                                                         "metadata":  {
+                                                                                          "displayName":  "Extensions Not Allowed",
+                                                                                          "description":  null
+                                                                                      },
+                                                                         "defaultValue":  [
+
+                                                                                          ]
+                                          },
+                                          "Monitoring - Install Azure Monitor Agent":  {
+                                                                                           "type":  "string",
+                                                                                           "metadata":  {
+                                                                                                            "displayName":  "Monitoring - Install Azure Monitor Agent",
+                                                                                                            "description":  null
+                                                                                                        },
+                                                                                           "allowedValues":  [
+                                                                                                                 "DeployIfNotExists",
+                                                                                                                 "Disabled"
+                                                                                                             ],
+                                                                                           "defaultValue":  "Disabled"
+                                          },
+                                          "Monitoring - Enable VM Insights":  {
+                                                                                  "type":  "string",
+                                                                                  "metadata":  {
+                                                                                                   "displayName":  "Monitoring - Enable VM Insights",
+                                                                                                   "description":  null
+                                                                                               },
+                                                                                  "allowedValues":  [
+                                                                                                        "DeployIfNotExists",
+                                                                                                        "Disabled"
+                                                                                                    ],
+                                                                                  "defaultValue":  "Disabled"
+                                          },
+                                          "Monitoring - VM Insights DCR ID":  {
+                                                                                  "type":  "string",
+                                                                                  "metadata":  {
+                                                                                                   "displayName":  "Monitoring - VM Insights DCR ID",
+                                                                                                   "description":  null
+                                                                                               },
+                                                                                  "defaultValue":  "\u003cVM INSIGHTS DCR ID\u003e"
+                                          },
+                                          "Change Tracking \u0026 Inventory - Enable":  {
+                                                                                            "type":  "string",
+                                                                                            "metadata":  {
+                                                                                                             "displayName":  "Change Tracking \u0026 Inventory - Enable",
+                                                                                                             "description":  null
+                                                                                                         },
+                                                                                            "allowedValues":  [
+                                                                                                                  "DeployIfNotExists",
+                                                                                                                  "Disabled"
+                                                                                                              ],
+                                                                                            "defaultValue":  "Disabled"
+                                          },
+                                          "Change Tracking \u0026 Inventory - DCR ID":  {
+                                                                                            "type":  "string",
+                                                                                            "metadata":  {
+                                                                                                             "displayName":  "Change Tracking \u0026 Inventory - DCR ID",
+                                                                                                             "description":  null
+                                                                                                         },
+                                                                                            "defaultValue":  "\u003cCHANGE TRACKING DCR ID\u003e"
+                                          }
+                       },
+                       "PolicyDefinitionGroups":  [
+                                                                    {
+                                                                        "name":  "Monitoring",
+                                                                        "displayName":  "Monitoring"
+                                                                    },
+                                                                    {
+                                                                        "name":  "Change Tracking and Inventory",
+                                                                        "displayName":  "Change Tracking and Inventory"
+                                                                    },
+                                                                    {
+                                                                        "name":  "Update Management",
+                                                                        "displayName":  "Update Management"
+                                                                    },
+                                                                    {
+                                                                        "name":  "Other Configuration",
+                                                                        "displayName":  "Other Configuration"
+                                                                    }
+                       ],
+                       "PolicyDefinitions":  [
+                                                               {
+                                                                   "policyDefinitionReferenceId":  "Linux - Azure Monitor Agent",
+                                                                   "policyDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/policyDefinitions/AzureArc.Linux.AzureMonitorAgent')]",
+                                                                   "parameters":  {
+                                                                                      "effect":  {
+                                                                                                     "value":  "[[parameters(\u0027Monitoring - Install Azure Monitor Agent\u0027)]"
+                                                                                                 }
+                                                                                  },
+                                                                   "groupNames":  [
+                                                                                      "Monitoring"
+                                                                                  ]
+                                                               },
+                                                               {
+                                                                   "policyDefinitionReferenceId":  "Windows - Azure Monitor Agent",
+                                                                   "policyDefinitionId":  "/providers/Microsoft.Authorization/policyDefinitions/94f686d6-9a24-4e19-91f1-de937dc171a4",
+                                                                   "parameters":  {
+                                                                                      "effect":  {
+                                                                                                     "value":  "[[parameters(\u0027Monitoring - Install Azure Monitor Agent\u0027)]"
+                                                                                                 }
+                                                                                  },
+                                                                   "groupNames":  [
+                                                                                      "Monitoring"
+                                                                                  ]
+                                                               },
+                                                               {
+                                                                   "policyDefinitionReferenceId":  "Windows - Dependency Agent",
+                                                                   "policyDefinitionId":  "/providers/Microsoft.Authorization/policyDefinitions/84cfed75-dfd4-421b-93df-725b479d356a",
+                                                                   "parameters":  {
+                                                                                      "effect":  {
+                                                                                                     "value":  "[[parameters(\u0027Monitoring - Enable VM Insights\u0027)]"
+                                                                                                 }
+                                                                                  },
+                                                                   "groupNames":  [
+                                                                                      "Monitoring"
+                                                                                  ]
+                                                               },
+                                                               {
+                                                                   "policyDefinitionReferenceId":  "Linux - Dependency Agent",
+                                                                   "policyDefinitionId":  "/providers/Microsoft.Authorization/policyDefinitions/08a4470f-b26d-428d-97f4-7e3e9c92b366",
+                                                                   "parameters":  {
+                                                                                      "effect":  {
+                                                                                                     "value":  "[[parameters(\u0027Monitoring - Enable VM Insights\u0027)]"
+                                                                                                 }
+                                                                                  },
+                                                                   "groupNames":  [
+                                                                                      "Monitoring"
+                                                                                  ]
+                                                               },
+                                                               {
+                                                                   "policyDefinitionReferenceId":  "Windows - Change Tracking Extension",
+                                                                   "policyDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/policyDefinitions/AzureArc.Windows.ChangeTracking.Extension')]",
+                                                                   "parameters":  {
+                                                                                      "effect":  {
+                                                                                                     "value":  "[[parameters(\u0027Change Tracking \u0026 Inventory - Enable\u0027)]"
+                                                                                                 }
+                                                                                  },
+                                                                   "groupNames":  [
+                                                                                      "Change Tracking and Inventory"
+                                                                                  ]
+                                                               },
+                                                               {
+                                                                   "policyDefinitionReferenceId":  "Linux - Change Tracking Extension",
+                                                                   "policyDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/policyDefinitions/AzureArc.Linux.ChangeTracking.Extension')]",
+                                                                   "parameters":  {
+                                                                                      "effect":  {
+                                                                                                     "value":  "[[parameters(\u0027Change Tracking \u0026 Inventory - Enable\u0027)]"
+                                                                                                 }
+                                                                                  },
+                                                                   "groupNames":  [
+                                                                                      "Change Tracking and Inventory"
+                                                                                  ]
+                                                               },
+                                                               {
+                                                                   "policyDefinitionReferenceId":  "Windows - VM Insights DCR",
+                                                                   "policyDefinitionId":  "/providers/Microsoft.Authorization/policyDefinitions/c24c537f-2516-4c2f-aac5-2cd26baa3d26",
+                                                                   "parameters":  {
+                                                                                      "effect":  {
+                                                                                                     "value":  "[[parameters(\u0027Monitoring - Enable VM Insights\u0027)]"
+                                                                                                 },
+                                                                                      "dcrResourceId":  {
+                                                                                                            "value":  "[[parameters(\u0027Monitoring - VM Insights DCR ID\u0027)]"
+                                                                                                        }
+                                                                                  },
+                                                                   "groupNames":  [
+                                                                                      "Monitoring"
+                                                                                  ]
+                                                               },
+                                                               {
+                                                                   "policyDefinitionReferenceId":  "Linux - VM Insights DCR",
+                                                                   "policyDefinitionId":  "/providers/Microsoft.Authorization/policyDefinitions/d5c37ce1-5f52-4523-b949-f19bf945b73a",
+                                                                   "parameters":  {
+                                                                                      "effect":  {
+                                                                                                     "value":  "[[parameters(\u0027Monitoring - Enable VM Insights\u0027)]"
+                                                                                                 },
+                                                                                      "dcrResourceId":  {
+                                                                                                            "value":  "[[parameters(\u0027Monitoring - VM Insights DCR ID\u0027)]"
+                                                                                                        }
+                                                                                  },
+                                                                   "groupNames":  [
+                                                                                      "Monitoring"
+                                                                                  ]
+                                                               },
+                                                               {
+                                                                   "policyDefinitionReferenceId":  "Windows - Change Tracking and Inventory DCR",
+                                                                   "policyDefinitionId":  "/providers/Microsoft.Authorization/policyDefinitions/c24c537f-2516-4c2f-aac5-2cd26baa3d26",
+                                                                   "parameters":  {
+                                                                                      "effect":  {
+                                                                                                     "value":  "[[parameters(\u0027Change Tracking \u0026 Inventory - Enable\u0027)]"
+                                                                                                 },
+                                                                                      "dcrResourceId":  {
+                                                                                                            "value":  "[[parameters(\u0027Change Tracking \u0026 Inventory - DCR ID\u0027)]"
+                                                                                                        }
+                                                                                  },
+                                                                   "groupNames":  [
+                                                                                      "Change Tracking and Inventory"
+                                                                                  ]
+                                                               },
+                                                               {
+                                                                   "policyDefinitionReferenceId":  "Linux - Change Tracking and Inventory DCR",
+                                                                   "policyDefinitionId":  "/providers/Microsoft.Authorization/policyDefinitions/d5c37ce1-5f52-4523-b949-f19bf945b73a",
+                                                                   "parameters":  {
+                                                                                      "effect":  {
+                                                                                                     "value":  "[[parameters(\u0027Change Tracking \u0026 Inventory - Enable\u0027)]"
+                                                                                                 },
+                                                                                      "dcrResourceId":  {
+                                                                                                            "value":  "[[parameters(\u0027Change Tracking \u0026 Inventory - DCR ID\u0027)]"
+                                                                                                        }
+                                                                                  },
+                                                                   "groupNames":  [
+                                                                                      "Change Tracking and Inventory"
+                                                                                  ]
+                                                               },
+                                                               {
+                                                                   "policyDefinitionReferenceId":  "Do Not Allow Specific Extensions",
+                                                                   "policyDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/policyDefinitions/AzureArc.DoNotAllowExtensions')]",
+                                                                   "parameters":  {
+                                                                                      "notAllowedExtensions":  {
+                                                                                                                   "value":  "[[parameters(\u0027Extensions Not Allowed\u0027)]"
+                                                                                                               }
+                                                                                  },
+                                                                   "groupNames":  [
+                                                                                      "Other Configuration"
+                                                                                  ]
+                                                               },
+                                                               {
+                                                                   "policyDefinitionReferenceId":  "Windows - Enable Periodic Update Checking",
+                                                                   "policyDefinitionId":  "/providers/Microsoft.Authorization/policyDefinitions/bfea026e-043f-4ff4-9d1b-bf301ca7ff46",
+                                                                   "parameters":  {
+
+                                                                                  },
+                                                                   "groupNames":  [
+                                                                                      "Update Management"
+                                                                                  ]
+                                                               },
+                                                               {
+                                                                   "policyDefinitionReferenceId":  "Linux - Enable Periodic Update Checking",
+                                                                   "policyDefinitionId":  "/providers/Microsoft.Authorization/policyDefinitions/bfea026e-043f-4ff4-9d1b-bf301ca7ff46",
+                                                                   "parameters":  {
+                                                                                      "osType":  {
+                                                                                                     "value":  "Linux"
+                                                                                                 }
+                                                                                  },
+                                                                   "groupNames":  [
+                                                                                      "Update Management"
+                                                                                  ]
+                                                               }
+                       ]
+            }
+        }
+    ]
+}

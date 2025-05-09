@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "resources": [
+    {
+      "type": "Microsoft.Authorization/policyDefinitions",
+      "name": "AzureArc.DoNotAllowExtensions",
+      "apiVersion": "2019-09-01",
+      "properties": {
+        "displayName": "Azure Arc Machines - Do not allow specific extensions",
+        "policyType": "Custom",
+        "mode": "All",
+        "description": "Do not allow the installation of specific extensions on Azure Arc machines",
+        "metadata": {
+          "category": "Azure Arc"
+        },
+        "parameters": {
+          "notAllowedExtensions": {
+            "type": "Array",
+            "metadata": {
+              "displayName": "Denied extension",
+              "description": "The list of extensions that will be denied."
+            }
+          }
+        },
+        "policyRule": {
+          "if": {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "microsoft.hybridcompute/machines/extensions"
+              },
+              {
+                "field": "microsoft.hybridcompute/machines/extensions/type",
+                "in": "[[parameters('notAllowedExtensions')]"
+              }
+            ]
+          },
+          "then": {
+            "effect": "deny"
+          }
+        }
+      }
+    }
+  ]
+}
